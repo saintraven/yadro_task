@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-url="https://lichess.org"
+url="https://httpstat.us"
 LOG_FILE="/app/log/log.txt"
 
 for i in {1..5}; do

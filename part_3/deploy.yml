@@ -42,3 +42,29 @@
         src: get-docker.sh
         dest: "{{ deploy_dir }}/part_3/get-docker.sh"
         mode: 0755
+
+        - name: Запустить скрипт установки Docker
+      command: "{{ deploy_dir }}/part_3/get-docker.sh"
+      args:
+        creates: /usr/bin/docker  
+
+    - name: Запустить docker.service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Собрать образ my-app
+      command: docker build -t my-app "{{ deploy_dir }}/part_2"
+      register: build_result
+      changed_when: "'Successfully built' in build_result.stdout"
+
+    - name: Запустить контейнер и захватить логи
+      command: docker run --name my-app-container my-app
+      register: container_output
+
+    - name: Проверить код завершения контейнера
+      fail:
+        msg: "Контейнер завершился с ошибкой (exit code {{ container_output.rc }})"
+      when: container_output.rc != 0
+

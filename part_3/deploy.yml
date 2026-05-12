@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Копировать всё в /tmp
+      synchronize:
+        src: ../.
+        dest: /tmp/my_deploy
+        delete: yes
+
+    - name: Запустить установку Docker
+      command: ../part_2/get-docker.sh 
+
+    - name: Собрать образ
+      command: docker build -f ../part_2/Docekrfile -t my-app . 
+
+    - name: Запустить контейнер и проверить логи
+      command: /tmp/my_deploy/part_2/check_logs.sh
+      register: result
+
+    - debug: var=result.stdout

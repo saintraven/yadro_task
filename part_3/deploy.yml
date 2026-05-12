@@ -1,10 +1,9 @@
----
 - hosts: all
   become: yes
   vars:
     deploy_dir: /opt/my_appp
 
-    tasks:
+  tasks:
     - name: Создать директорию для развертывания
       file:
         path: "{{ deploy_dir }}"
@@ -20,3 +19,26 @@
         - part_1/log
         - part_2/
         - part_3/
+
+    - name: Скопировать src/main.sh                
+      copy:
+        src: ../part_1/src/main.sh
+        dest: "{{ deploy_dir }}/part_1/src/main.sh"
+        mode: 0755
+
+    - name: Скопировать Dockerfile
+      copy:
+        src: ../part_2/Dockerfile
+        dest: "{{ deploy_dir }}/part_2/Dockerfile"
+
+    - name: Скопировать check_logs.sh
+      copy:
+        src: ../part_2/check_logs.sh
+        dest: "{{ deploy_dir }}/part_2/check_logs.sh"
+        mode: 0755
+
+    - name: Скопировать get-docker.sh
+      copy:
+        src: get-docker.sh
+        dest: "{{ deploy_dir }}/part_3/get-docker.sh"
+        mode: 0755
